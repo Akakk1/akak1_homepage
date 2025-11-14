@@ -1,0 +1,310 @@
+:root {
+    --glass-opacity: 0.4;
+    --drop-size: 0;
+    --drop-x: 50%;
+    --drop-y: 50%;
+    --drop-scale: 1;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+body {
+    background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+    color: #fff;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow-x: hidden;
+    padding: 20px;
+}
+
+.container {
+    width: 90%;
+    max-width: 1400px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+}
+
+.background-image {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('https://images.unsplash.com/photo-1519681393784-d120267933ba?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+    background-size: cover;
+    background-position: center;
+    z-index: -1;
+}
+
+.glass-panel {
+    position: relative;
+    padding: 50px;
+    border-radius: 30px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: none;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    transition: all 0.4s ease;
+    z-index: 1;
+}
+
+/* 玻璃扭曲层 - 使用CSS实现静态扭曲效果 */
+.glass-distortion {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.1) 0%, transparent 20%),
+        radial-gradient(circle at 80% 70%, rgba(255, 255, 255, 0.1) 0%, transparent 20%),
+        radial-gradient(circle at 40% 60%, rgba(255, 255, 255, 0.1) 0%, transparent 15%);
+    opacity: var(--glass-opacity);
+    z-index: -1;
+    pointer-events: none;
+    mix-blend-mode: overlay;
+}
+
+.liquid-drop {
+    position: absolute;
+    width: var(--drop-size);
+    height: var(--drop-size);
+    top: var(--drop-y);
+    left: var(--drop-x);
+    border-radius: 50%;
+    background: radial-gradient(circle at center, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0) 70%);
+    transform: translate(-50%, -50%) scale(var(--drop-scale));
+    pointer-events: none;
+    transition: width 0.3s ease, height 0.3s ease, transform 0.3s ease;
+    z-index: 2;
+    mix-blend-mode: overlay;
+}
+
+/* 内容层 - 不应用扭曲效果 */
+.content-layer {
+    position: relative;
+    z-index: 3;
+}
+
+h1 {
+    font-size: 4rem;
+    font-weight: 800;
+    margin-bottom: 25px;
+    background: linear-gradient(90deg, #a8edea 0%, #fed6e3 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    line-height: 1.1;
+}
+
+.subtitle {
+    font-size: 1.5rem;
+    font-weight: 300;
+    margin-bottom: 30px;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+p {
+    font-size: 1.2rem;
+    line-height: 1.7;
+    margin-bottom: 40px;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.button-group {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 40px;
+}
+
+.liquid-button {
+    position: relative;
+    padding: 14px 32px;
+    background: rgba(255, 255, 255, 0.05);
+    border: none;
+    border-radius: 50px;
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 500;
+    cursor: pointer;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transform: scale(1);
+    z-index: 1;
+}
+
+/* 按钮扭曲层 - 使用CSS实现静态扭曲效果 */
+.button-distortion {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        radial-gradient(circle at 30% 50%, rgba(255, 255, 255, 0.2) 0%, transparent 30%),
+        radial-gradient(circle at 70% 50%, rgba(255, 255, 255, 0.2) 0%, transparent 30%);
+    border-radius: 50px;
+    transform: scale(0.9);
+    opacity: 0;
+    transition: all 0.4s ease;
+    z-index: -1;
+    mix-blend-mode: overlay;
+}
+
+.liquid-button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.liquid-button:hover .button-distortion {
+    opacity: 1;
+    transform: scale(1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.profile-image {
+    width: 100%;
+    border-radius: 30px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+    transform: perspective(1000px) rotateY(-5deg);
+    transition: transform 0.5s ease;
+}
+
+.profile-image:hover {
+    transform: perspective(1000px) rotateY(0deg);
+}
+
+.profile-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.social-links {
+    display: flex;
+    gap: 15px;
+}
+
+.social-icon {
+    position: relative;
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    text-decoration: none;
+    font-size: 1.3rem;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transform: scale(1);
+    z-index: 1;
+}
+
+.social-icon::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    transform: scale(0.9);
+    opacity: 0;
+    transition: all 0.4s ease;
+    z-index: -1;
+}
+
+.social-icon:hover {
+    transform: scale(1.1);
+}
+
+.social-icon:hover::before {
+    opacity: 1;
+    transform: scale(1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.skills {
+    margin-top: 40px;
+}
+
+.skill-item {
+    margin-bottom: 20px;
+}
+
+.skill-name {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.skill-bar {
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.skill-progress {
+    height: 100%;
+    background: linear-gradient(90deg, #a8edea 0%, #fed6e3 100%);
+    border-radius: 3px;
+    transition: width 1.5s ease;
+}
+
+@media (max-width: 1100px) {
+    .container {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+    
+    .profile-image {
+        transform: none;
+        max-width: 500px;
+        margin: 0 auto;
+    }
+    
+    h1 {
+        font-size: 3rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        gap: 30px;
+    }
+    
+    .glass-panel {
+        padding: 30px;
+    }
+    
+    h1 {
+        font-size: 2.5rem;
+    }
+    
+    .button-group {
+        flex-direction: column;
+    }
+    
+    .liquid-button {
+        width: 100%;
+    }
+}
